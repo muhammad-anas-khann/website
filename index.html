@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Totte's Restaurant - Select Role</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+    }
+    .role-select {
+      background: #121212;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .role-card {
+      background: #1e1e1e;
+      padding: 40px;
+      border-radius: 30px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+      color: #fff;
+      max-width: 500px;
+      width: 100%;
+    }
+    .role-card h2 {
+      color: #ffc107;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .role-card p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+    .role-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .role-btn {
+      background: #ffc107;
+      color: #121212;
+      padding: 12px 25px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: 0.3s;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    .role-btn:hover {
+      background: #e0a800;
+      transform: scale(1.05);
+    }
+    @media (max-width: 600px) {
+      .role-card {
+        padding: 18px 8px;
+        border-radius: 16px;
+        max-width: 98vw;
+      }
+      .role-card h2 {
+        font-size: 1.3rem;
+      }
+      .role-card p {
+        font-size: 1rem;
+      }
+      .role-btn {
+        font-size: 0.98rem;
+        padding: 10px 16px;
+      }
+      .role-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+    @media (max-width: 400px) {
+      .role-card {
+        padding: 8px 2px;
+      }
+      .role-btn {
+        font-size: 0.92rem;
+        padding: 8px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="role-select">
+    <div class="role-card">
+      <h2>Welcome!</h2>
+      <p>Please select your role to continue:</p>
+      <div class="role-buttons">
+        <a href="dashLogin.html" class="role-btn">Admin</a>
+        <a href="userLogin.html" class="role-btn">User</a>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

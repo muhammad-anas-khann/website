@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Protein Platter Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0d0d0d;
+      color: #fff;
+      font-family: 'Quicksand', sans-serif;
+      display: flex;
+      min-height: 100vh;
+    }
+    aside {
+      width: 240px;
+      background: linear-gradient(180deg, #111, #1c1c1c);
+      border-right: 2px solid #ffc107;
+      box-shadow: 4px 0 12px rgba(255, 193, 7, 0.2);
+      padding: 2rem 1rem;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-family: 'Orbitron', sans-serif;
+      color: #ffc107;
+      margin-bottom: 2rem;
+      text-align: center;
+      text-shadow: 0 0 10px #ffc10799;
+    }
+    nav a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      margin: 1rem 0;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+    }
+    nav a:hover {
+      background: #1c1c1c;
+      color: #ffc107;
+      border-left: 3px solid #ffc107;
+      box-shadow: inset 3px 0 8px rgba(255, 193, 7, 0.3);
+    }
+    main { flex: 1; padding: 2rem; }
+    .dashboard-header {
+      font-size: 2rem;
+      font-family: 'Orbitron', sans-serif;
+      color: #ffc107;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 8px #ffc10788;
+    }
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: #1a1a1a;
+      padding: 1.5rem;
+      border: 1px solid #ffc10766;
+      border-radius: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 12px rgba(255, 193, 7, 0.4);
+    }
+    .card h3 { color: #ffc107; margin-bottom: 0.5rem; }
+    .card p { color: #ddd; }
+    @media (max-width: 768px) {
+      aside { display: none; }
+      main { padding: 1rem; }
+      .dashboard-header { font-size: 1.3rem; }
+    }
+    .section { display: none; }
+    .section.active { display: block; }
+    .form-group { margin-bottom: 1rem; }
+    input[type="text"] {
+      padding: 0.5rem;
+      border: none;
+      border-radius: 5px;
+      width: 250px;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #ffc107;
+      color: #000;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 0.5rem;
+    }
+    ul { margin-top: 1rem; list-style: none; padding-left: 0; }
+    li {
+      margin-bottom: 0.5rem;
+      background: #222;
+      padding: 0.5rem;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    li input[type="checkbox"] {
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+    .edit-input {
+      flex-grow: 1;
+      padding: 0.3rem 0.5rem;
+      border-radius: 4px;
+      border: none;
+      font-size: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      color: #fff !important;
+      background-color: transparent;
+    }
+    #categories>div:nth-child(2) {
+      margin-top: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    #categories div>button {
+      margin-right: 1rem;
+      padding: 0.6rem 1.2rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(255, 193, 7, 0.5);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    #categories div>button:hover {
+      box-shadow: 0 0 12px rgba(255, 193, 7, 0.9);
+    }
+    #categories div>button:nth-child(1) {
+      background: #ffc107;
+      color: #000;
+    }
+    #categories div>button:nth-child(1):hover {
+      background: #e6b800;
+      color: #000;
+    }
+    #categories div>button:nth-child(2) {
+      background: #ffc107;
+      color: #0d0d0d;
+    }
+    #categories div>button:nth-child(2):hover {
+      background: #e6b800;
+      color: #000;
+    }
+    #categories h3 { margin-top: 2rem; }
+    #addProductForm input[type="text"],
+    #addProductForm input[type="file"] {
+      background: #111;
+      color: #fff;
+      border: 1px solid #ffc10799;
+      border-radius: 6px;
+      padding: 0.5rem;
+      width: 100%;
+      margin-bottom: 0.7rem;
+    }
+    #addProductForm button {
+      background-color: #ffc107;
+      color: #000;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+    #deleteSelectedBtn {
+      margin-bottom: 1rem;
+      background: #ff5252;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 6px;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #deleteSelectedBtn:hover {
+      background: #ff0000;
+    }
+    @media (max-width: 600px) {
+      .card-container { grid-template-columns: 1fr; }
+      .card { padding: 1rem; }
+      .form-group input, #addProductForm input[type="text"] { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <div class="logo">Admin Panel</div>
+    <nav>
+      <a href="#" onclick="showSection('dashboard')">Dashboard</a>
+      <a href="#" onclick="showSection('orders')">Orders</a>
+      <a href="#" onclick="showSection('menu')">Add</a>
+      <a href="#" onclick="showSection('users')">Users</a>
+      <a href="#" onclick="showSection('reviews')">Reviews</a>
+      <a href="#" onclick="showSection('settings')">Settings</a>
+      <a href="#" onclick="showSection('categories')">Categories</a>
+    </nav>
+  </aside>
+  <main>
+    <section id="dashboard" class="section active">
+      <h1 class="dashboard-header">Welcome, Admin 🍗</h1>
+      <div class="card-container">
+        <div class="card">
+          <h3>Orders Today</h3>
+          <p>124</p>
+        </div>
+        <div class="card">
+          <h3>Revenue</h3>
+          <p>Rs. 12,500</p>
+        </div>
+        <div class="card">
+          <h3>New Customers</h3>
+          <p>18</p>
+        </div>
+        <div class="card">
+          <h3>Pending Reviews</h3>
+          <p>4</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="orders" class="section">
+      <h1 class="dashboard-header">Orders</h1>
+      <ul id="orderList"></ul>
+    </section>
+
+    <section id="menu" class="section">
+      <h1 class="dashboard-header">Add Your Dishes</h1>
+      <span
+        onclick="toggleAddProduct()"
+        style="
+          display: block;
+          font-size: 4.2rem;
+          color: #ffc107;
+          cursor: pointer;
+          text-shadow: 0 0 18px #ffc107, 0 0 36px #ffc107;
+          margin-top: 16px;
+          margin-bottom: 18px;
+          margin-left: 8px;
+          line-height: 1;
+          font-weight: 100;
+          font-family: 'Arial Narrow', Arial, 'Orbitron', sans-serif;
+          width: max-content;
+          letter-spacing: -6px;
+        "
+        title="Add"
+      >&#43;</span>
+      <div id="addProductForm" style="display: none; margin-bottom: 2rem;">
+        <div class="form-group">
+          <input type="text" id="productName" placeholder="Product Name">
+        </div>
+        <div class="form-group">
+          <input type="text" id="productDesc" placeholder="Product Description">
+        </div>
+        <div class="form-group">
+          <input type="file" id="productImage">
+        </div>
+        <button onclick="addProduct()">Add Product</button>
+      </div>
+      <button id="deleteSelectedBtn" onclick="deleteSelectedProducts()">Delete Selected</button>
+      <ul id="menuList"></ul>
+    </section>
+
+    <section id="users" class="section">
+      <h1 class="dashboard-header">Users</h1>
+      <ul id="userList"></ul>
+    </section>
+
+    <section id="reviews" class="section">
+      <h1 class="dashboard-header">Reviews</h1>
+      <p>Coming soon...</p>
+    </section>
+
+    <section id="settings" class="section">
+      <h1 class="dashboard-header">Settings</h1>
+      <p>Dark mode toggle, password change, etc.</p>
+    </section>
+
+    <section id="categories" class="section">
+      <h1 class="dashboard-header">Manage Categories</h1>
+      <div class="form-group">
+        <input type="text" id="categoryInput" placeholder="Enter category name">
+        <button onclick="addCategory()">Add</button>
+      </div>
+      <div>
+        <button onclick="editSelected()">Edit Selected</button>
+        <button onclick="deleteSelected()">Delete Selected</button>
+      </div>
+      <h3>Category List</h3>
+      <ul id="categoryList"></ul>
+    </section>
+  </main>
+  <script>
+    function showSection(id) {
+      var sections = document.getElementsByClassName('section');
+      for (var i = 0; i < sections.length; i++) {
+        sections[i].classList.remove('active');
+      }
+      document.getElementById(id).classList.add('active');
+    }
+
+    var categories = {};
+
+    function saveCategories() {
+      localStorage.setItem('categories', JSON.stringify(categories));
+    }
+
+    function loadCategories() {
+      const saved = localStorage.getItem('categories');
+      if (saved) {
+        categories = JSON.parse(saved);
+      }
+    }
+
+    function renderCategories() {
+      const ul = document.getElementById('categoryList');
+      ul.innerHTML = '';
+      for (const key in categories) {
+        let li = document.createElement('li');
+        let checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'category-checkbox';
+        checkbox.value = key;
+        let input = document.createElement('input');
+        input.type = 'text';
+        input.value = categories[key];
+        input.disabled = true;
+        input.className = 'edit-input';
+        input.addEventListener('blur', function () {
+          if (!input.disabled) {
+            categories[key] = input.value.trim();
+            saveCategories();
+          }
+        });
+        input.addEventListener('keypress', function (e) {
+          if (e.key === 'Enter') {
+            input.blur();
+          }
+        });
+        li.appendChild(checkbox);
+        li.appendChild(input);
+        ul.appendChild(li);
+      }
+    }
+
+    function addCategory() {
+      const input = document.getElementById('categoryInput');
+      let val = input.value.trim();
+      if (val === '') {
+        alert('Category name cannot be empty!');
+        return;
+      }
+      let key = val.toLowerCase().replace(/\s+/g, '-');
+      if (categories[key]) {
+        alert('Category already exists!');
+        return;
+      }
+      categories[key] = val;
+      input.value = '';
+      saveCategories();
+      renderCategories();
+    }
+
+    function editSelected() {
+      const checkboxes = document.querySelectorAll('.category-checkbox:checked');
+      if (checkboxes.length === 0) {
+        alert('Select at least one category to edit');
+        return;
+      }
+      checkboxes.forEach(cb => {
+        let input = cb.nextSibling;
+        if (input.disabled) {
+          input.disabled = false;
+          input.focus();
+        }
+      });
+    }
+
+    function deleteSelected() {
+      const checkboxes = document.querySelectorAll('.category-checkbox:checked');
+      if (checkboxes.length === 0) {
+        alert('Select at least one category to delete');
+        return;
+      }
+      checkboxes.forEach(cb => {
+        let key = cb.value;
+        delete categories[key];
+      });
+      saveCategories();
+      renderCategories();
+    }
+
+    function toggleAddProduct() {
+      const form = document.getElementById('addProductForm');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function addProduct() {
+      const name = document.getElementById("productName").value.trim();
+      const desc = document.getElementById("productDesc").value.trim();
+      const imageInput = document.getElementById("productImage");
+      const imageFile = imageInput.files[0];
+
+      if (!name || !desc || !imageFile) {
+        alert("Sab fields bhar bhai – naam, description aur image zaroori hain!");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const imgURL = e.target.result;
+
+        let products = JSON.parse(localStorage.getItem('products') || '[]');
+        products.push({
+          name: name,
+          desc: desc,
+          image: imgURL
+        });
+        localStorage.setItem('products', JSON.stringify(products));
+        renderProducts();
+        document.getElementById("productName").value = "";
+        document.getElementById("productDesc").value = "";
+        document.getElementById("productImage").value = "";
+        toggleAddProduct();
+      };
+      reader.readAsDataURL(imageFile);
+    }
+
+    function renderProducts() {
+      const menuList = document.getElementById("menuList");
+      menuList.innerHTML = "";
+      let products = JSON.parse(localStorage.getItem('products') || '[]');
+      products.forEach((product, index) => {
+        const li = document.createElement("li");
+        li.style.background = "#1a1a1a";
+        li.style.padding = "1rem";
+        li.style.borderRadius = "10px";
+        li.style.marginBottom = "1rem";
+        li.style.boxShadow = "0 0 8px rgba(255, 193, 7, 0.4)";
+        li.style.display = "flex";
+        li.style.alignItems = "center";
+        li.style.gap = "1rem";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "product-checkbox";
+        checkbox.value = index;
+        const img = document.createElement("img");
+        img.src = product.image;
+        img.alt = product.name;
+        img.style.width = "60px";
+        img.style.height = "60px";
+        img.style.borderRadius = "6px";
+        img.style.objectFit = "cover";
+        const infoDiv = document.createElement("div");
+        const h4 = document.createElement("h4");
+        h4.innerText = product.name;
+        h4.style.color = "#ffc107";
+        h4.style.marginBottom = "0.3rem";
+        const p = document.createElement("p");
+        p.innerText = product.desc;
+        p.style.color = "#ccc";
+        p.style.fontSize = "0.9rem";
+        infoDiv.appendChild(h4);
+        infoDiv.appendChild(p);
+        li.appendChild(checkbox);
+        li.appendChild(img);
+        li.appendChild(infoDiv);
+        menuList.appendChild(li);
+      });
+    }
+
+    function deleteSelectedProducts() {
+      let products = JSON.parse(localStorage.getItem('products') || '[]');
+      const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+      if (checkboxes.length === 0) {
+        alert('Select at least one dish to delete');
+        return;
+      }
+      const indicesToDelete = Array.from(checkboxes).map(cb => parseInt(cb.value));
+      indicesToDelete.sort((a, b) => b - a).forEach(idx => {
+        products.splice(idx, 1);
+      });
+      localStorage.setItem('products', JSON.stringify(products));
+      renderProducts();
+    }
+
+    loadCategories();
+    renderCategories();
+    renderProducts();
+  </script>
+</body>
+</html>

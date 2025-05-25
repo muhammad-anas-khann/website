@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login | Protein Platter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Quicksand', sans-serif;
+    }
+    body {
+      background: #0d0d0d;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 1rem;
+    }
+    .container {
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid #ffc10750;
+      transition: all 0.3s;
+    }
+    #formTitle {
+      font-family: 'Orbitron', sans-serif;
+      color: #ffc107;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 10px #ffc10799;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      transition: all 0.4s ease-in-out; 
+      opacity: 1;
+      transform: scale(1);
+    }
+    .hidden {
+      display: none;
+    }
+    input {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      border: 1.5px solid #ffc10760;
+      background: #111;
+      color: #fff;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    input:focus {
+      border-color: #ffc107;
+      outline: none;
+      box-shadow: 0 0 8px #ffc10799;
+    }
+    input::placeholder {
+      color: #bbb;
+    }
+    button {
+      padding: 0.8rem;
+      background: #ffc107;
+      color: #000;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #ffca2b;
+      transform: scale(1.04);
+    }
+    .switch {
+      margin-top: 1rem;
+      color: #bbb;
+      font-size: 0.95rem;
+    }
+    .switch a {
+      color: #ffc107;
+      cursor: pointer;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem 0.5rem;
+        border-radius: 0.7rem;
+        max-width: 98vw;
+      }
+      #formTitle {
+        font-size: 1.2rem;
+      }
+      input, button {
+        font-size: 0.98rem;
+        padding: 0.6rem;
+      }
+    }
+    @media (max-width: 400px) {
+      .container {
+        padding: 0.5rem 0.2rem;
+      }
+      input, button {
+        font-size: 0.92rem;
+        padding: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 id="formTitle">Admin Login</h2>
+    <form id="dashboardLoginForm">
+      <input type="email" placeholder="Admin Email" required />
+      <input type="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <form id="dashboardSignupForm" class="hidden">
+      <input type="text" placeholder="Admin Name" required />
+      <input type="email" placeholder="Email" required />
+      <input type="password" placeholder="Password" required />
+      <button type="submit">Sign Up</button>
+    </form>
+    <div class="switch">
+      <span id="toggleText">
+        Don't have an account? <a id="switchForm">Sign Up</a>
+      </span>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var loginForm = document.getElementById("dashboardLoginForm");
+      var signupForm = document.getElementById("dashboardSignupForm");
+      var toggleText = document.getElementById("toggleText");
+      var formTitle = document.getElementById("formTitle");
+      var isLogin = true;
+
+      function toggleForms() {
+        isLogin = !isLogin;
+        if (isLogin) {
+          loginForm.className = "";
+          signupForm.className = "hidden";
+          formTitle.innerHTML = "Admin Login";
+          toggleText.innerHTML =
+            "Don't have an account? <a id='switchForm'>Sign Up</a>";
+        } else {
+          loginForm.className = "hidden";
+          signupForm.className = "";
+          formTitle.innerHTML = "Admin Signup";
+          toggleText.innerHTML =
+            "Already have an account? <a id='switchForm'>Login</a>";
+        }
+        var newSwitch = document.getElementById("switchForm");
+        newSwitch.addEventListener("click", toggleForms);
+      }
+
+      var switchLink = document.getElementById("switchForm");
+      switchLink.addEventListener("click", toggleForms);
+
+      signupForm.onsubmit = function () {
+        var inputs = signupForm.getElementsByTagName("input");
+        var name = inputs[0].value;
+        var email = inputs[1].value;
+        var password = inputs[2].value;
+        if (name && email && password) {
+          var adminUser = {
+            name: name,
+            email: email,
+            password: password,
+          };
+          localStorage.setItem("adminUserData", JSON.stringify(adminUser));
+          Swal.fire({
+            icon: "success",
+            title: "Signup Successful",
+            text: "Admin account created! You can now login.",
+          });
+          toggleForms();
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Signup Failed",
+            text: "Please fill in all the fields!",
+          });
+        }
+        return false;
+      };
+
+      loginForm.onsubmit = function () {
+        var inputs = loginForm.getElementsByTagName("input");
+        var email = inputs[0].value;
+        var password = inputs[1].value;
+        var savedAdmin = JSON.parse(localStorage.getItem("adminUserData"));
+        if (savedAdmin) {
+          if (email === savedAdmin.email && password === savedAdmin.password) {
+            window.location.href = "dashboard.html";
+          } else if (email !== savedAdmin.email) {
+            Swal.fire({
+              icon: "error",
+              title: "Invalid Email",
+              text: "Admin email is incorrect!",
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Invalid Password",
+              text: "Admin password is incorrect!",
+            });
+          }
+        } else {
+          Swal.fire({
+            icon: "warning",
+            title: "No Admin Found",
+            text: "Please sign up first as admin!",
+          });
+        }
+        return false;
+      };
+    });
+  </script>
+</body>
+</html>
